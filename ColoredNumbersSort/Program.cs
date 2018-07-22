@@ -7,6 +7,8 @@ using System.Drawing;
 using System.IO;
 using Microsoft.Office.Interop.Word;
 using Xceed.Words.NET;
+/*using Spire.Doc;
+using Spire.Doc.Documents;*/
 
 
 namespace ColoredNumbersSort
@@ -26,8 +28,9 @@ namespace ColoredNumbersSort
     class Program
     {
         static void Main(string[] args)
-        {
+        { 
             Dictionary<WdColorIndex,Color> colorsCompare = new Dictionary<WdColorIndex, Color>(15);
+            colorsCompare.Add(WdColorIndex.wdDarkBlue, Color.DarkBlue);
 
             Color[] sortOrder =
             {
@@ -47,10 +50,8 @@ namespace ColoredNumbersSort
                 Color.Gray,
                 Color.White
             };
-
-
-
-            Color GetColorFromId(WdColorIndex colorIndex)
+            
+            Color GetColorById(WdColorIndex colorIndex)
             {
                 switch (colorIndex)
                 {
@@ -70,20 +71,20 @@ namespace ColoredNumbersSort
                         return sortOrder[6];
                     case WdColorIndex.wdBlue:
                         return sortOrder[7];
-                    case WdColorIndex.wd:
-                        return sortOrder[1];
-                    case WdColorIndex.wdGreen:
-                        return sortOrder[1];
-                    case WdColorIndex.wdGreen:
-                        return sortOrder[1];
-                    case WdColorIndex.wdGreen:
-                        return sortOrder[1];
-                    case WdColorIndex.wdGreen:
-                        return sortOrder[1];
-                    case WdColorIndex.wdGreen:
-                        return sortOrder[1];
-                    case WdColorIndex.wdGreen:
-                        return sortOrder[1];
+                    case WdColorIndex.wdBrightGreen:
+                        return sortOrder[8];
+                    case WdColorIndex.wdTurquoise:
+                        return sortOrder[9];
+                    case WdColorIndex.wdRed:
+                        return sortOrder[10];
+                    case WdColorIndex.wdPink:
+                        return sortOrder[11];
+                    case WdColorIndex.wdYellow:
+                        return sortOrder[12];
+                    case WdColorIndex.wdGray25:
+                        return sortOrder[13];
+                    case WdColorIndex.wdWhite:
+                        return sortOrder[14];
                     default:
                         return sortOrder[14];
 
@@ -98,7 +99,24 @@ namespace ColoredNumbersSort
 
             Console.WriteLine("write filename");
             string filename = Console.ReadLine();
+            
+            
+            //////Spire
+           /* Document document = new Document();
 
+            document.LoadFromFile(filename);
+
+            TextSelection[] text = document*/
+
+
+
+
+
+
+
+
+
+            /////////////////////////Xceed
             DocX doc = DocX.Load(filename);
 
             foreach (var VARIABLE in doc.Text)
@@ -106,18 +124,35 @@ namespace ColoredNumbersSort
                 
             }
 
-            
+
+
+
+
+
+
+
+            ///////////////////Interop
             Application application = new Application();
             Document document = application.Documents.Open(filename);
 
-            foreach (Range character in document.Characters)
+            string number = "";
+            for (int i = 0; i < document.Characters.Count; i++)
             {
-                if (int.TryParse(character.ToString(),out int num))
+                Range currentChar = document.Characters[i];
+
+                if (currentChar.HighlightColorIndex != WdColorIndex.wdNoHighlight)
                 {
-                    coloredNumbers.Add(new ColoredNumber(num, character.HighlightColorIndex));      
+                    if (int.TryParse(currentChar.ToString(), out int num) &&
+                       (number == "" || currentChar.HighlightColorIndex == document.Characters[i - 1].HighlightColorIndex))
+                    {
+
+                        coloredNumbers.Add(new ColoredNumber(num, GetColorById(currentChar.HighlightColorIndex)));
+                    }
                 }
             }
 
+
+            void
 
 
         }
