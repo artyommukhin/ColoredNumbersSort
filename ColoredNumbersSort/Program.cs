@@ -6,155 +6,125 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 using Microsoft.Office.Interop.Word;
-using Xceed.Words.NET;
-/*using Spire.Doc;
-using Spire.Doc.Documents;*/
-
 
 namespace ColoredNumbersSort
 {
-    struct ColoredNumber
-    {
-        private int number;
-        private Color color;
-
-        public ColoredNumber(int number, Color color)
-        {
-            this.number = number;
-            this.color = color;
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
-        { 
-            Dictionary<WdColorIndex,Color> colorsCompare = new Dictionary<WdColorIndex, Color>(15);
-            colorsCompare.Add(WdColorIndex.wdDarkBlue, Color.DarkBlue);
-
-            Color[] sortOrder =
-            {
-                Color.DarkBlue,
-                Color.DarkGreen,
-                Color.DarkCyan, 
-                Color.DarkRed,
-                Color.DarkMagenta,
-                Color.Olive,
-                Color.DarkGray,
-                Color.Blue,
-                Color.Green,
-                Color.Cyan,
-                Color.Red,
-                Color.Magenta,
-                Color.Yellow,
-                Color.Gray,
-                Color.White
-            };
-            
-            Color GetColorById(WdColorIndex colorIndex)
-            {
-                switch (colorIndex)
-                {
-                    case WdColorIndex.wdDarkBlue:
-                        return sortOrder[0];
-                    case WdColorIndex.wdGreen:
-                        return sortOrder[1];
-                    case WdColorIndex.wdTeal:
-                        return sortOrder[2];
-                    case WdColorIndex.wdDarkRed:
-                        return sortOrder[3];
-                    case WdColorIndex.wdViolet:
-                        return sortOrder[4];
-                    case WdColorIndex.wdDarkYellow:
-                        return sortOrder[5];
-                    case WdColorIndex.wdGray50:
-                        return sortOrder[6];
-                    case WdColorIndex.wdBlue:
-                        return sortOrder[7];
-                    case WdColorIndex.wdBrightGreen:
-                        return sortOrder[8];
-                    case WdColorIndex.wdTurquoise:
-                        return sortOrder[9];
-                    case WdColorIndex.wdRed:
-                        return sortOrder[10];
-                    case WdColorIndex.wdPink:
-                        return sortOrder[11];
-                    case WdColorIndex.wdYellow:
-                        return sortOrder[12];
-                    case WdColorIndex.wdGray25:
-                        return sortOrder[13];
-                    case WdColorIndex.wdWhite:
-                        return sortOrder[14];
-                    default:
-                        return sortOrder[14];
-
-                }
-            }
-
-            
-            
-            List<int> orderedNumbers = new List<int>();
-
-            List<ColoredNumber> coloredNumbers = new List<ColoredNumber>();
-
+        {
             Console.WriteLine("write filename");
             string filename = Console.ReadLine();
-            
-            
-            //////Spire
-           /* Document document = new Document();
 
-            document.LoadFromFile(filename);
-
-            TextSelection[] text = document*/
-
-
-
-
-
-
-
-
-
-            /////////////////////////Xceed
-            DocX doc = DocX.Load(filename);
-
-            foreach (var VARIABLE in doc.Text)
-            {
-                
-            }
-
-
-
-
-
-
-
-
-            ///////////////////Interop
             Application application = new Application();
             Document document = application.Documents.Open(filename);
 
-            string number = "";
-            for (int i = 0; i < document.Characters.Count; i++)
+            List<int> orderedNumbers = new List<int>();
+
+            List<int> darkBlueNums = new List<int>();
+            List<int> darkGreenNums = new List<int>();
+            List<int> darkCyanNums = new List<int>();
+            List<int> darkRedNums = new List<int>();
+            List<int> darkMagentaNums = new List<int>();
+            List<int> darkYellowNums = new List<int>();
+            List<int> darkGrayNums = new List<int>();
+            List<int> blueNums = new List<int>();
+            List<int> greenNums = new List<int>();
+            List<int> cyanNums = new List<int>();
+            List<int> redNums = new List<int>();
+            List<int> magentaNums = new List<int>();
+            List<int> yellowNums = new List<int>();
+            List<int> grayNums = new List<int>();
+            List<int> whiteNums = new List<int>();
+
+            List<int> otherNums = new List<int>();
+
+            foreach (Range word in document.Words)
             {
-                Range currentChar = document.Characters[i];
-
-                if (currentChar.HighlightColorIndex != WdColorIndex.wdNoHighlight)
+                if (int.TryParse(word.Text, out int num))
                 {
-                    if (int.TryParse(currentChar.ToString(), out int num) &&
-                       (number == "" || currentChar.HighlightColorIndex == document.Characters[i - 1].HighlightColorIndex))
+                    switch (word.HighlightColorIndex)
                     {
-
-                        coloredNumbers.Add(new ColoredNumber(num, GetColorById(currentChar.HighlightColorIndex)));
+                        case WdColorIndex.wdDarkBlue:
+                            darkBlueNums.Add(num);
+                            break;
+                        case WdColorIndex.wdGreen:
+                            darkGreenNums.Add(num);
+                            break;
+                        case WdColorIndex.wdTeal:
+                            darkCyanNums.Add(num);
+                            break;
+                        case WdColorIndex.wdDarkRed:
+                            darkRedNums.Add(num);
+                            break;
+                        case WdColorIndex.wdViolet:
+                            darkMagentaNums.Add(num);
+                            break;
+                        case WdColorIndex.wdDarkYellow:
+                            darkYellowNums.Add(num);
+                            break;
+                        case WdColorIndex.wdGray50:
+                            darkGrayNums.Add(num);
+                            break;
+                        case WdColorIndex.wdBlue:
+                            blueNums.Add(num);
+                            break;
+                        case WdColorIndex.wdBrightGreen:
+                            greenNums.Add(num);
+                            break;
+                        case WdColorIndex.wdTurquoise:
+                            cyanNums.Add(num);
+                            break;
+                        case WdColorIndex.wdRed:
+                            redNums.Add(num);
+                            break;
+                        case WdColorIndex.wdPink:
+                            magentaNums.Add(num);
+                            break;
+                        case WdColorIndex.wdYellow:
+                            yellowNums.Add(num);
+                            break;
+                        case WdColorIndex.wdGray25:
+                            grayNums.Add(num);
+                            break;
+                        case WdColorIndex.wdNoHighlight:
+                            whiteNums.Add(num);
+                            break;
+                        default:
+                            otherNums.Add(num);
+                            break;
                     }
                 }
             }
 
+            if (otherNums.Count > 0)
+            {
+                Console.WriteLine("Error: unexpected color found");
+                Console.ReadKey();
+                return;
+            }
 
-            void
+            document.Close();
 
+            orderedNumbers.AddRange(darkBlueNums);
+            orderedNumbers.AddRange(darkGreenNums);
+            orderedNumbers.AddRange(darkCyanNums);
+            orderedNumbers.AddRange(darkRedNums);
+            orderedNumbers.AddRange(darkMagentaNums);
+            orderedNumbers.AddRange(darkYellowNums);
+            orderedNumbers.AddRange(darkGrayNums);
+            orderedNumbers.AddRange(blueNums);
+            orderedNumbers.AddRange(greenNums);
+            orderedNumbers.AddRange(cyanNums);
+            orderedNumbers.AddRange(redNums);
+            orderedNumbers.AddRange(magentaNums);
+            orderedNumbers.AddRange(yellowNums);
+            orderedNumbers.AddRange(grayNums);
+            orderedNumbers.AddRange(whiteNums);
 
+            Console.Write("\nArranged numbers:\n"+string.Join(",", orderedNumbers));
+
+            Console.ReadKey();
         }
     }
 }
